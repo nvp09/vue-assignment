@@ -1,31 +1,48 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
-// 1. ประกาศตัวแปร name มีค่าเริ่มต้นเป็น ""
 
-// 2. ประกาศตัวแปร participants เป็น Array เปล่าสำหรับเก็บค่า input name
+// 1. ตัวแปรเก็บค่าจาก input
+const name = ref<string>("");
 
-// 3. สร้างฟังก์ชันสำหรับเพิ่ม name เข้า participants ตอนที่กดปุ่ม
+// 2. ตัวแปรเก็บรายชื่อทั้งหมด
+const participants = ref<string[]>([]);
+
+// 3. ฟังก์ชันเพิ่มชื่อ
 const addParticipant = () => {
-  // เริ่มเขียนโค้ดตรงนี้
+  if (name.value.trim() !== "") {
+    participants.value.push(name.value);
+    name.value = ""; // ล้าง input
+  }
 };
 </script>
 
-export default
 <template>
   <div class="assignment-container">
     <h2>รายชื่อผู้เข้าร่วมกิจกรรม</h2>
-    <!-- 4. ใช้ v-model เพื่อเก็บค่า input -->
-    <input placeholder="กรอกชื่อผู้เข้าร่วม" />
-    <!-- 5. ใช้ @click เพื่อเรียกใช้ addParticipant ตอนกดปุ่ม -->
-    <button>เพิ่มชื่อ</button>
+
+    <!-- 4. v-model -->
+    <input
+      v-model="name"
+      placeholder="กรอกชื่อผู้เข้าร่วม"
+    />
+
+    <!-- 5. @click -->
+    <button @click="addParticipant">เพิ่มชื่อ</button>
 
     <div class="participant-list">
-      <!-- 6. เขียน v-if เพื่อแสดงข้อความ "ยังไม่มีผู้เข้าร่วม" เมื่อไม่มีสมาชิกใน participants -->
-      <p>ยังไม่มีผู้เข้าร่วม</p>
-      <!-- 7. เขียน v-else เพื่อแสดง <li> ถ้ามีสมาชิกใน participants -->
-      <ul>
-        <!-- 8. เขียน v-for เพื่อลูปและแสดงรายชื่อทั้งหมดใน participants -->
-        <li></li>
+      <!-- 6. v-if -->
+      <p v-if="participants.length === 0">
+        ยังไม่มีผู้เข้าร่วม
+      </p>
+
+      <!-- 7 + 8 -->
+      <ul v-else>
+        <li
+          v-for="(person, index) in participants"
+          :key="index"
+        >
+          {{ person }}
+        </li>
       </ul>
     </div>
   </div>
@@ -37,8 +54,9 @@ export default
   margin: auto;
   padding: 12px;
   border-radius: 8px;
-  background: #f9f9f9;
+  background: skyblue;
 }
+
 button {
   margin-left: 8px;
 }
